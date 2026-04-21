@@ -1,0 +1,41 @@
+Q9: Clone a GitHub repository, modify a file and push the changes back to the repository.
+
+-----------------------------
+1. Clone Repository
+-----------------------------
+git clone https://github.com/ViknanS/exam1.git
+
+-----------------------------
+2. Go to Repository Folder
+-----------------------------
+cd exam1
+
+-----------------------------
+3. Modify File
+-----------------------------
+nano sample.txt
+
+(Add some text and save)
+
+-----------------------------
+4. Add Changes
+-----------------------------
+git add sample.txt
+
+-----------------------------
+5. Commit Changes
+-----------------------------
+git commit -m "Modified sample file"
+
+-----------------------------
+6. Push Changes
+-----------------------------
+git push origin main
+
+-----------------------------
+Execution Summary:
+-----------------------------
+- git clone → copy repository
+- git add → stage changes
+- git commit → save changes
+- git push → upload changes to GitHub

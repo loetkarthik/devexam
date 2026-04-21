@@ -1,0 +1,42 @@
+Q3: Develop and demonstrate a simple monolithic application model using Python (Flask).
+
+-----------------------------
+1. Monolithic Application (app.py)
+-----------------------------
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route("/")
+def home():
+    return "Welcome to Monolithic App"
+
+@app.route("/about")
+def about():
+    return "This is a simple monolithic application"
+
+if __name__ == "__main__":
+    app.run(debug=True)
+
+-----------------------------
+2. Install Flask
+-----------------------------
+pip install flask
+
+-----------------------------
+3. Run Application
+-----------------------------
+python app.py
+
+-----------------------------
+4. Access in Browser
+-----------------------------
+http://localhost:5000
+http://localhost:5000/about
+
+-----------------------------
+Execution Summary:
+-----------------------------
+- Monolithic app means all logic in a single file
+- Flask handles routes and responses
+- Application runs on local server

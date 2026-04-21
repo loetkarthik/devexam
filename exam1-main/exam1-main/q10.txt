@@ -1,0 +1,55 @@
+Q10: Configure a GitHub Actions workflow to automatically build and test a Python application.
+
+-----------------------------
+1. Project Files
+-----------------------------
+app.py
+test_app.py
+
+-----------------------------
+2. Create Workflow File
+-----------------------------
+Path:
+.github/workflows/python.yml
+
+-----------------------------
+3. GitHub Actions Code
+-----------------------------
+name: Python CI
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.9"
+
+    - name: Install Dependencies
+      run: pip install -r requirements.txt
+
+    - name: Run Tests
+      run: python -m unittest discover
+
+-----------------------------
+4. Push Code
+-----------------------------
+git add .
+git commit -m "Added Python CI workflow"
+git push
+
+-----------------------------
+Execution Summary:
+-----------------------------
+- Workflow triggers on push
+- Installs Python and dependencies
+- Runs test cases automatically

@@ -1,0 +1,172 @@
+JENKINS PIPELINE WITH DOCKER (FULL STEPS)
+
+-----------------------------------
+FILE STRUCTURE
+-----------------------------------
+project/
+│── app.py
+│── Dockerfile
+└── Jenkinsfile
+
+-----------------------------------
+STEP 1 – CREATE PROJECT
+-----------------------------------
+mkdir project
+cd project
+
+-----------------------------------
+STEP 2 – CREATE PYTHON APP
+-----------------------------------
+cat <<EOT > app.py
+print("Hello Jenkins Docker")
+EOT
+
+-----------------------------------
+STEP 3 – CREATE DOCKERFILE
+-----------------------------------
+cat <<EOT > Dockerfile
+FROM python:3.10
+WORKDIR /app
+COPY . .
+CMD ["python", "app.py"]
+EOT
+
+-----------------------------------
+STEP 4 – CREATE JENKINSFILE
+-----------------------------------
+cat <<EOT > Jenkinsfile
+pipeline {
+    agent any
+
+    environment {
+        IMAGE_NAME = "myapp"
+        DOCKER_USER = "viknans"
+    }
+
+    stages {
+        stage('Build Image') {
+            steps {
+                sh 'docker build -t $DOCKER_USER/$IMAGE_NAME .'
+            }
+        }
+
+        stage('Push Image') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub-creds',
+                    usernameVariable: 'USER',
+                    passwordVariable: 'PASS'
+                )]) {
+                    sh '''
+                    echo $PASS | docker login -u $USER --password-stdin
+                    docker push $DOCKER_USER/$IMAGE_NAME
+                    '''
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh 'docker run -d -p 5000:5000 $DOCKER_USER/$IMAGE_NAME'
+            }
+        }
+    }
+}
+EOT
+
+-----------------------------------
+STEP 5 – PUSH TO GITHUB
+-----------------------------------
+git init
+git branch -M main
+git remote add origin https://github.com/ViknanS/jenkins.git
+git add .
+git commit -m "Jenkins setup"
+git push -u origin main
+
+-----------------------------------
+STEP 6 – RUN JENKINS (DOCKER)
+-----------------------------------
+docker volume create jenkins-data
+
+docker run -d   --name jenkins   -p 8081:8080 -p 50000:50000   -v jenkins-data:/var/jenkins_home   -v /var/run/docker.sock:/var/run/docker.sock   jenkins/jenkins:lts
+
+-----------------------------------
+STEP 7 – GET PASSWORD
+-----------------------------------
+docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword
+
+Open browser:
+http://localhost:8081
+
+-----------------------------------
+STEP 8 – CREATE PIPELINE
+-----------------------------------
+New Item → Pipeline → OK
+
+Pipeline → Pipeline script from SCM
+SCM → Git
+Repo → https://github.com/ViknanS/jenkins.git
+Branch → */main
+Save
+
+-----------------------------------
+STEP 9 – ADD DOCKER CREDENTIAL
+-----------------------------------
+Manage Jenkins → Credentials → Global → Add
+
+Kind: Username with password
+Username: viknans
+Password: DockerHub ACCESS TOKEN
+ID: dockerhub-creds
+
+-----------------------------------
+ERROR FIXES
+-----------------------------------
+
+1. docker not found
+-----------------------------------
+docker exec -u root jenkins bash -c "apt-get update && apt-get install -y docker.io"
+
+-----------------------------------
+2. permission denied docker.sock
+-----------------------------------
+docker exec -u root jenkins usermod -aG docker jenkins
+docker exec -u root jenkins chmod 666 /var/run/docker.sock
+docker restart jenkins
+
+-----------------------------------
+3. wrong branch error
+-----------------------------------
+Use:
+*/main
+
+-----------------------------------
+4. git clone error
+-----------------------------------
+Remove clone stage from Jenkinsfile
+
+-----------------------------------
+5. docker push access denied
+-----------------------------------
+Use DockerHub ACCESS TOKEN (not password)
+
+-----------------------------------
+FINAL EXECUTION
+-----------------------------------
+1. Click Build Now
+2. Check Console Output
+3. Should see:
+
+docker build ...
+docker login ...
+docker push ...
+Finished: SUCCESS
+
+-----------------------------------
+OUTPUT
+-----------------------------------
+- Docker image created
+- Image pushed to DockerHub
+- Container deployed
+- Jenkins pipeline SUCCESS

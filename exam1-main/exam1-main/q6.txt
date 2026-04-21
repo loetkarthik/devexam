@@ -1,0 +1,58 @@
+Q6: Use kubectl commands to create, scale, and manage Kubernetes resources like pods and deployments.
+
+-----------------------------
+1. Create a Pod
+-----------------------------
+kubectl run mypod --image=nginx
+
+-----------------------------
+2. View Pods
+-----------------------------
+kubectl get pods
+
+-----------------------------
+3. Create a Deployment
+-----------------------------
+kubectl create deployment myapp --image=nginx
+
+-----------------------------
+4. View Deployments
+-----------------------------
+kubectl get deployments
+
+-----------------------------
+5. Scale Deployment
+-----------------------------
+kubectl scale deployment myapp --replicas=3
+
+-----------------------------
+6. Expose Deployment (Service)
+-----------------------------
+kubectl expose deployment myapp --type=NodePort --port=80
+
+-----------------------------
+7. Get Services
+-----------------------------
+kubectl get services
+
+-----------------------------
+8. Describe Resource
+-----------------------------
+kubectl describe pod mypod
+kubectl describe deployment myapp
+
+-----------------------------
+9. Delete Resources
+-----------------------------
+kubectl delete pod mypod
+kubectl delete deployment myapp
+
+-----------------------------
+Execution Summary:
+-----------------------------
+- kubectl run → create pod
+- kubectl create deployment → manage replicas
+- kubectl scale → increase/decrease pods
+- kubectl expose → create service
+- kubectl get → view resources
+- kubectl delete → remove resources

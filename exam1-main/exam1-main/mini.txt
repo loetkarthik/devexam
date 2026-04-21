@@ -1,0 +1,78 @@
+KUBERNETES COMMANDS USING kubectl
+
+-----------------------------------
+FILE STRUCTURE
+-----------------------------------
+exam1/
+│── mini.txt
+└── deployment.yaml
+
+-----------------------------------
+INSTALLATION STEPS
+-----------------------------------
+1. Install Docker Desktop and start it
+2. Install Minikube and kubectl:
+   brew install minikube kubectl
+3. Start Minikube:
+   minikube start --driver=docker
+4. Check cluster:
+   kubectl get nodes
+
+-----------------------------------
+STEP 1 – CREATE DEPLOYMENT
+-----------------------------------
+kubectl create deployment myapp --image=nginx:latest
+kubectl get deployments
+kubectl get pods
+
+-----------------------------------
+STEP 2 – SCALE DEPLOYMENT
+-----------------------------------
+kubectl scale deployment myapp --replicas=3
+kubectl get pods
+
+kubectl scale deployment myapp --replicas=1
+
+-----------------------------------
+STEP 3 – EXPOSE & MANAGE
+-----------------------------------
+kubectl expose deployment myapp --port=80 --type=NodePort
+kubectl get services
+
+kubectl describe pod <pod-name>
+kubectl logs <pod-name>
+
+-----------------------------------
+STEP 4 – YAML DEPLOYMENT
+-----------------------------------
+Create file: deployment.yaml
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      containers:
+      - name: myapp
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+
+Apply:
+kubectl apply -f deployment.yaml
+kubectl get all
+
+-----------------------------------
+CLEAN UP
+-----------------------------------
+kubectl delete deployment myapp
+kubectl delete service myapp

@@ -1,0 +1,93 @@
+DEVOPS STEPS (GIT + GITHUB ACTIONS CI)
+
+-----------------------------------
+FILE STRUCTURE
+-----------------------------------
+exam1/
+│── app.py
+│── requirements.txt
+│── steps.txt
+└── .github/
+    └── workflows/
+        └── ci.yml
+
+-----------------------------------
+STEP 1 – CREATE PROJECT
+-----------------------------------
+mkdir project
+cd project
+
+-----------------------------------
+STEP 2 – CREATE FILES
+-----------------------------------
+# app.py
+a = 2
+b = 3
+result = a + b
+print(result)
+assert result == 5
+
+# requirements.txt
+(empty file)
+
+-----------------------------------
+STEP 3 – CREATE GITHUB ACTIONS WORKFLOW
+-----------------------------------
+mkdir -p .github/workflows
+
+Create file: .github/workflows/ci.yml
+
+name: Python CI
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
+
+    - run: pip install -r requirements.txt
+
+    - run: python app.py
+
+-----------------------------------
+STEP 4 – GIT COMMANDS
+-----------------------------------
+git init
+git remote add origin https://github.com/ViknanS/inbuild.git
+git branch -M main
+
+git add .
+git commit -m "Initial CI setup"
+
+-----------------------------------
+STEP 5 – PUSH CODE
+-----------------------------------
+git pull origin main --rebase
+git push -u origin main
+
+-----------------------------------
+STEP 6 – OUTPUT
+-----------------------------------
+- Code pushed to GitHub
+- GitHub Actions automatically runs
+- Python script executes
+- Test (assert) verifies output
+- If correct → SUCCESS
+- If wrong → FAILURE
+
+-----------------------------------
+IMPORTANT NOTES
+-----------------------------------
+- Folder must be: .github/workflows/
+- File name: ci.yml
+- requirements.txt spelling must be correct
+- Always pull before push if repo exists

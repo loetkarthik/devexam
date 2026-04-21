@@ -1,0 +1,66 @@
+Q4: Create a CI pipeline using GitHub Actions to build and push a Docker image of a Python app to Docker Hub.
+
+-----------------------------
+1. Project Files
+-----------------------------
+app.py
+Dockerfile
+requirements.txt
+
+-----------------------------
+2. Create GitHub Actions Workflow
+-----------------------------
+Create file:
+.github/workflows/docker.yml
+
+-----------------------------
+3. Workflow Code (docker.yml)
+-----------------------------
+name: Docker CI
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Login to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Build Image
+      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/myapp .
+
+    - name: Push Image
+      run: docker push ${{ secrets.DOCKER_USERNAME }}/myapp
+
+-----------------------------
+4. Add Secrets in GitHub
+-----------------------------
+Go to GitHub → Settings → Secrets → Actions
+
+Add:
+DOCKER_USERNAME = your dockerhub username
+DOCKER_PASSWORD = your dockerhub password
+
+-----------------------------
+5. Push Code to GitHub
+-----------------------------
+git add .
+git commit -m "Added CI pipeline"
+git push
+
+-----------------------------
+Execution Summary:
+-----------------------------
+- GitHub Actions runs automatically on push
+- Builds Docker image
+- Pushes image to Docker Hub
